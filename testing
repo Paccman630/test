@@ -1,0 +1,34 @@
+def decode(message_file):
+    # Read the contents of the file
+    with open(message_file, 'r') as file:
+        lines = file.readlines()
+
+    # Create a dictionary to store the words and their corresponding numbers
+    word_dict = {}
+    for line in lines:
+        words = line.strip().split()
+        number = int(words[0])
+        for word in words[1:]:
+            # Ignore non-word characters at the end of a word
+            cleaned_word = ''.join(c for c in word if c.isalpha())
+            word_dict[int(number)] = cleaned_word
+            number += 1
+
+    # Find the maximum number to determine the number of lines in the pyramid
+    max_number = max(word_dict.keys())
+
+    # Build the pyramid and extract the message words
+    message_words = []
+    for line_number in range(1, max_number + 1):
+        start_index = (line_number * (line_number - 1)) // 2 + 1
+        end_index = (line_number * (line_number + 1)) // 2 + 1
+        message_words.extend(word_dict[number] for number in range(start_index, end_index))
+
+    # Combine the message words into a string
+    decoded_message = ' '.join(message_words)
+    return decoded_message
+
+# Test the function with the example input file
+message_file = 'encoded_message.txt'
+decoded_message = decode(message_file)
+print(decoded_message)
